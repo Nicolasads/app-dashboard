@@ -1,0 +1,43 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "user@email.com",
+      "password": "123456"
+    },
+    {
+      "email": "user1@email.com",
+      "password": "$2a$10$M17PrR6a45A/oClkhOhVJeqDbCYbrwvx9O5/OPbW.7NLUxpO6oN8u",
+      "firstname": "User",
+      "lastname": "teste",
+      "age": 21,
+      "id": 2
+    }
+  ],
+  "products": [
+    {
+      "id": 1652634795289,
+      "nomeProduto": "Sal",
+      "dataFabricacao": "2022-05-16",
+      "perecivel": "false",
+      "dataValidade": "",
+      "precoProduto": "2"
+    },
+    {
+      "id": 1652634829590,
+      "nomeProduto": "Óleo de cozinha",
+      "dataFabricacao": "",
+      "perecivel": false,
+      "dataValidade": "",
+      "precoProduto": ""
+    },
+    {
+      "id": 1652634963803,
+      "nomeProduto": "Sal",
+      "dataFabricacao": "2022-05-11",
+      "perecivel": "false",
+      "dataValidade": "",
+      "precoProduto": "5"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+.container-fluid {
+    background-color: #f1f1f1;
+    height: 100vh;
+}
+
+.btn-primary {
+    height: 50px;
+}
+
+.btn-secondary {
+    height: 50px;
+}
