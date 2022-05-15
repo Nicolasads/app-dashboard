@@ -7,11 +7,11 @@ function EditProduct() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [data, setData] = useState();
+  const [formError, setFormError] = useState("");
   const [product, setProduct] = useState({
     nomeProduto: "",
     dataFabricacao: "",
-    perecivel: false,
+    perecivel: "",
     dataValidade: "",
     precoProduto: "",
   });
@@ -27,36 +27,48 @@ function EditProduct() {
     try {
       const response = await api.get(`/products/${id}`);
 
-      console.log("data", response.data);
-
-      setData(response.data);
+      setProduct(response.data);
     } catch (e) {
       console.log("erro", e);
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    const data = {
-      id: new Date().getTime(),
+    const productData = {
       nomeProduto: product.nomeProduto,
-      dataFabricacao: product.dataFabricacao,
+      dataFabricacao: product?.dataFabricacao,
       perecivel: product.perecivel,
-      dataValidade: product.dataValidade,
+      dataValidade: product.perecivel === "false" ? "" : product.dataValidade,
       precoProduto: product.precoProduto,
     };
+    console.log(productData);
 
-    try {
-      await api.put(`/products/${id}`, data);
+    const fetchData = async () => {
+      try {
+        await api.put(`/products/${id}`, productData);
 
-      toast("Produto atualizado com sucesso!", {
-        type: "success",
-      });
+        toast("Produto atualizado com sucesso!", {
+          type: "success",
+        });
 
-      navigate("/dashboard");
-    } catch (e) {
-      console.log("erro", e);
+        navigate("/dashboard");
+      } catch (e) {
+        console.log("erro", e);
+      }
+    };
+
+    if (productData.perecivel === "true") {
+      if (productData.dataFabricacao > productData.dataValidade) {
+        setFormError(
+          "A data de fabricação é maior que a data de validade, verifique e tente novamente."
+        );
+      } else {
+        fetchData();
+      }
+    } else {
+      fetchData();
     }
   };
 
@@ -85,7 +97,7 @@ function EditProduct() {
                       aria-describedby="nome"
                       placeholder="Digite o nome do produto"
                       name="nomeProduto"
-                      defaultValue={data?.nomeProduto}
+                      defaultValue={product?.nomeProduto}
                       onChange={productChange}
                     />
                   </div>
@@ -101,7 +113,7 @@ function EditProduct() {
                       aria-describedby="data-fabricação"
                       name="dataFabricacao"
                       onChange={productChange}
-                      defaultValue={data?.dataFabricacao}
+                      defaultValue={product?.dataFabricacao}
                     />
                   </div>
 
@@ -113,6 +125,7 @@ function EditProduct() {
                       className="form-select"
                       aria-label="perecivel"
                       name="perecivel"
+                      defaultValue={product?.perecivel}
                       onChange={productChange}
                     >
                       <option value="">Selecione</option>
@@ -121,20 +134,22 @@ function EditProduct() {
                     </select>
                   </div>
 
-                  <div className="form-group mt-4">
-                    <label htmlFor="data-validade" className="mb-1">
-                      Data de validade
-                    </label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      id="data-validade"
-                      aria-describedby="data-validade"
-                      name="dataValidade"
-                      onChange={productChange}
-                      defaultValue={data?.dataValidade}
-                    />
-                  </div>
+                  {product.perecivel === "true" && (
+                    <div className="form-group mt-4">
+                      <label htmlFor="data-validade" className="mb-1">
+                        Data de validade
+                      </label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="data-validade"
+                        aria-describedby="data-validade"
+                        name="dataValidade"
+                        onChange={productChange}
+                        defaultValue={product?.dataValidade}
+                      />
+                    </div>
+                  )}
 
                   <div className="form-group mt-4">
                     <label htmlFor="preco-produto" className="mb-1">
@@ -147,8 +162,12 @@ function EditProduct() {
                       aria-describedby="preco-produto"
                       name="precoProduto"
                       onChange={productChange}
-                      defaultValue={data?.precoProduto}
+                      defaultValue={product?.precoProduto}
                     />
+
+                    {formError && (
+                      <p className="text-danger mt-3"> {formError} </p>
+                    )}
 
                     <div className="mt-4 d-flex align-items-center justify-content-between">
                       <Link

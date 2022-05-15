@@ -1,3 +1,4 @@
+import { useFormik } from "formik";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -6,45 +7,55 @@ import { api } from "../../services/api";
 function AddProduct() {
   const navigate = useNavigate();
 
-  const [product, setProduct] = useState({
-    nomeProduto: "",
-    dataFabricacao: "",
-    perecivel: false,
-    dataValidade: "",
-    precoProduto: "",
+  const [formError, setFormError] = useState("");
+
+  const formik = useFormik({
+    initialValues: {
+      nomeProduto: "",
+      dataFabricacao: "",
+      perecivel: "",
+      dataValidade: "",
+      precoProduto: "",
+    },
+    onSubmit: (values) => {
+      handleSubmit(values);
+    },
   });
 
-  const productChange = (e) => {
-    setProduct({
-      ...product,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const data = {
+  const handleSubmit = (values) => {
+    const productData = {
       id: new Date().getTime(),
-      nomeProduto: product.nomeProduto,
-      dataFabricacao: product.dataFabricacao,
-      perecivel: product.perecivel,
-      dataValidade: product.dataValidade,
-      precoProduto: product.precoProduto,
+      nomeProduto: values.nomeProduto,
+      dataFabricacao: values?.dataFabricacao,
+      perecivel: values.perecivel,
+      dataValidade: values.perecivel === "false" ? "" : values.dataValidade,
+      precoProduto: values.precoProduto,
     };
 
-    try {
-      const response = await api.post("/products", data);
+    const fetchData = async () => {
+      try {
+        await api.post("/products", values);
 
-      console.log("response", response);
+        toast("Produto criado com sucesso!", {
+          type: "success",
+        });
 
-      toast("Produto criado com sucesso!", {
-        type: "success",
-      });
+        navigate("/dashboard");
+      } catch (e) {
+        console.log("erro", e);
+      }
+    };
 
-      navigate("/dashboard");
-    } catch (e) {
-      console.log("erro", e);
+    if (productData.perecivel === "true") {
+      if (productData.dataFabricacao > productData.dataValidade) {
+        setFormError(
+          "A data de fabricação é maior que a data de validade, verifique e tente novamente."
+        );
+      } else {
+        fetchData();
+      }
+    } else {
+      fetchData();
     }
   };
 
@@ -57,7 +68,7 @@ function AddProduct() {
               <h4 className="text-center">Adicionar produto</h4>
 
               <div className="mt-3">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={formik.handleSubmit}>
                   <div className="form-group mt-4">
                     <label htmlFor="nome" className="mb-1">
                       Nome do produto
@@ -69,7 +80,8 @@ function AddProduct() {
                       aria-describedby="nome"
                       placeholder="Digite o nome do produto"
                       name="nomeProduto"
-                      onChange={productChange}
+                      onChange={formik.handleChange}
+                      value={formik.values.nomeProduto}
                     />
                   </div>
 
@@ -83,7 +95,8 @@ function AddProduct() {
                       id="data-fabricação"
                       aria-describedby="data-fabricação"
                       name="dataFabricacao"
-                      onChange={productChange}
+                      onChange={formik.handleChange}
+                      value={formik.values.dataFabricacao}
                     />
                   </div>
 
@@ -95,7 +108,8 @@ function AddProduct() {
                       className="form-select"
                       aria-label="perecivel"
                       name="perecivel"
-                      onChange={productChange}
+                      onChange={formik.handleChange}
+                      value={formik.values.perecivel}
                     >
                       <option value="">Selecione</option>
                       <option value={true}>Sim</option>
@@ -103,7 +117,7 @@ function AddProduct() {
                     </select>
                   </div>
 
-                  {product.perecivel === "true" && (
+                  {formik.values.perecivel === "true" && (
                     <div className="form-group mt-4">
                       <label htmlFor="data-validade" className="mb-1">
                         Data de validade
@@ -114,7 +128,8 @@ function AddProduct() {
                         id="data-validade"
                         aria-describedby="data-validade"
                         name="dataValidade"
-                        onChange={productChange}
+                        onChange={formik.handleChange}
+                        value={formik.values.dataValidade}
                       />
                     </div>
                   )}
@@ -129,8 +144,13 @@ function AddProduct() {
                       id="preco-produto"
                       aria-describedby="preco-produto"
                       name="precoProduto"
-                      onChange={productChange}
+                      onChange={formik.handleChange}
+                      value={formik.values.precoProduto}
                     />
+
+                    {formError && (
+                      <p className="text-danger mt-3"> {formError} </p>
+                    )}
 
                     <div className="mt-4 d-flex align-items-center justify-content-between">
                       <Link

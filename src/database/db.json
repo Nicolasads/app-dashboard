@@ -14,30 +14,5 @@
       "id": 2
     }
   ],
-  "products": [
-    {
-      "id": 1652634795289,
-      "nomeProduto": "Sal",
-      "dataFabricacao": "2022-05-16",
-      "perecivel": "false",
-      "dataValidade": "",
-      "precoProduto": "2"
-    },
-    {
-      "id": 1652634829590,
-      "nomeProduto": "Óleo de cozinha",
-      "dataFabricacao": "",
-      "perecivel": false,
-      "dataValidade": "",
-      "precoProduto": ""
-    },
-    {
-      "id": 1652634963803,
-      "nomeProduto": "Sal",
-      "dataFabricacao": "2022-05-11",
-      "perecivel": "false",
-      "dataValidade": "",
-      "precoProduto": "5"
-    }
-  ]
+  "products": []
 }
