@@ -160,7 +160,7 @@ function EditProduct() {
                       </Link>
 
                       <button type="submit" className="btn btn-primary w-25">
-                        Enviar
+                        Editar
                       </button>
                     </div>
                   </div>
