@@ -14,5 +14,70 @@
       "id": 2
     }
   ],
-  "products": []
+  "products": [
+    {
+      "nomeProduto": "aas",
+      "dataFabricacao": "2022-05-17",
+      "perecivel": "false",
+      "dataValidade": "",
+      "precoProduto": "5,50",
+      "id": 8
+    },
+    {
+      "nomeProduto": "aa ss",
+      "dataFabricacao": "2022-05-17",
+      "perecivel": "false",
+      "dataValidade": "",
+      "precoProduto": "6,30",
+      "id": 9
+    },
+    {
+      "nomeProduto": "adasx",
+      "dataFabricacao": "2022-05-19",
+      "perecivel": "false",
+      "dataValidade": "",
+      "precoProduto": "6,50",
+      "id": 10
+    },
+    {
+      "nomeProduto": "teste",
+      "dataFabricacao": "2022-05-25",
+      "perecivel": "false",
+      "dataValidade": "",
+      "precoProduto": "4,50",
+      "id": 11
+    },
+    {
+      "nomeProduto": "sasdada",
+      "dataFabricacao": "2022-05-18",
+      "perecivel": "false",
+      "dataValidade": "",
+      "precoProduto": "10,50",
+      "id": 12
+    },
+    {
+      "nomeProduto": "test",
+      "dataFabricacao": "2022-05-17",
+      "perecivel": "false",
+      "dataValidade": "",
+      "precoProduto": "2,50",
+      "id": 13
+    },
+    {
+      "nomeProduto": "1233 Teste",
+      "dataFabricacao": "2022-05-17",
+      "perecivel": "false",
+      "dataValidade": "",
+      "precoProduto": "13,20",
+      "id": 14
+    },
+    {
+      "nomeProduto": "asda",
+      "dataFabricacao": "2022-05-17",
+      "perecivel": "true",
+      "dataValidade": "2022-05-21",
+      "precoProduto": "10,50",
+      "id": 15
+    }
+  ]
 }

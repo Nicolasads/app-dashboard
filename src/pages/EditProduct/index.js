@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import CurrencyInput from "../../components/CurrencyInput";
 import { api } from "../../services/api";
 
 function EditProduct() {
@@ -155,8 +156,7 @@ function EditProduct() {
                     <label htmlFor="preco-produto" className="mb-1">
                       Preço do produto
                     </label>
-                    <input
-                      type="number"
+                    <CurrencyInput
                       className="form-control"
                       id="preco-produto"
                       aria-describedby="preco-produto"

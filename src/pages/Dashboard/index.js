@@ -8,15 +8,21 @@ import moment from "moment";
 import "moment/locale/pt-br";
 import { toast } from "react-toastify";
 import DeleteModal from "../../components/DeleteModal";
+import Paginator from "../../components/Paginator";
 
 function Dashboard() {
   const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const navigate = useNavigate();
 
+  let limit = 10;
+
   const getProducts = async () => {
     try {
-      const response = await api.get("/products");
+      const response = await api.get(
+        `/products?_page=${currentPage}&_limit=${limit}`
+      );
 
       setData(response.data);
     } catch (err) {
@@ -40,9 +46,23 @@ function Dashboard() {
     }
   };
 
+  const increasePage = () => {
+    setCurrentPage(currentPage + 1);
+
+    console.log(currentPage);
+  };
+
+  const decreasePage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+
+      console.log(currentPage);
+    }
+  };
+
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [currentPage]);
 
   return (
     <div className="main-content">
@@ -63,52 +83,61 @@ function Dashboard() {
               )}
 
               {data.length !== 0 && (
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Nome</th>
-                      <th scope="col">Data de fabricação</th>
-                      <th scope="col">Produto perecível</th>
-                      <th scope="col">Validade</th>
-                      <th scope="col">Preço</th>
-                      <th>Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.map((products) => (
-                      <tr key={products.id}>
-                        <th scope="row">{products.nomeProduto}</th>
-                        <td>{moment(products.dataFabricacao).format("L")}</td>
-                        <td>{products.perecivel === "true" ? "Sim" : "Não"}</td>
-                        <td>
-                          {products.dataValidade !== ""
-                            ? moment(products.dataValidade).format("L")
-                            : "Sem validade"}
-                        </td>
-                        <td>
-                          R${" "}
-                          {Number(products.precoProduto)
-                            .toFixed(2)
-                            .replace(".", ",")}
-                        </td>
-                        <td>
-                          <FiEdit2
-                            color="#0288FF"
-                            size={20}
-                            type="button"
-                            onClick={() =>
-                              navigate(`/edit-product/${products.id}`)
-                            }
-                          />
-                          <DeleteModal
-                            onClick={() => deleteProduct(products.id)}
-                          />
-                        </td>
+                <div className="table-responsive">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Data de fabricação</th>
+                        <th scope="col">Produto perecível</th>
+                        <th scope="col">Validade</th>
+                        <th scope="col">Preço</th>
+                        <th>Ações</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {data.map((products) => (
+                        <tr key={products.id}>
+                          <th scope="row">{products.nomeProduto}</th>
+                          <td>{moment(products.dataFabricacao).format("L")}</td>
+                          <td>
+                            {products.perecivel === "true" ? "Sim" : "Não"}
+                          </td>
+                          <td>
+                            {products.dataValidade !== ""
+                              ? moment(products.dataValidade).format("L")
+                              : "Sem validade"}
+                          </td>
+                          <td>R$ {products.precoProduto}</td>
+                          <td>
+                            <FiEdit2
+                              color="#0288FF"
+                              size={20}
+                              type="button"
+                              onClick={() =>
+                                navigate(`/edit-product/${products.id}`)
+                              }
+                            />
+                            <DeleteModal
+                              onClick={() => deleteProduct(products.id)}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
+            </div>
+
+            <div className="mt-3 d-block mx-auto">
+              <Paginator
+                increase={increasePage}
+                decrease={decreasePage}
+                page={currentPage}
+                limit={limit}
+                length={data.length}
+              />
             </div>
           </div>
         </div>

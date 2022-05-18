@@ -5,25 +5,16 @@ export const appSlice = createSlice({
   initialState: {
     token: "",
     isLogged: false,
-    user: [],
+    user: {},
   },
   reducers: {
     saveToken: (state, action) => {
-      // const token = localStorage.setItem("token", action.payload.accessToken);
       state.token = action.payload.accessToken;
       state.isLogged = true;
 
-      console.log(state.isLogged);
+      console.log(state.token);
 
-      state.user.push({
-        user: {
-          id: action.payload.id,
-          age: action.payload.age,
-          email: action.payload.email,
-          firstname: action.payload.firstname,
-          lastname: action.payload.lastname,
-        },
-      });
+      state.user = action.payload.user;
     },
     logout: (state) => {
       state.token = "";
@@ -33,9 +24,9 @@ export const appSlice = createSlice({
   },
 });
 
-export const userToken = (state) => state.token;
+export const userToken = (state) => state.app.token;
 
-export const userLogged = (state) => state.logged;
+export const userLogged = (state) => state.app.logged;
 
 export const { saveToken, logout } = appSlice.actions;
 

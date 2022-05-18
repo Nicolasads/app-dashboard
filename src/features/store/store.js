@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
 import appReducer from "../slicer/appSlice";
-import { persistReducer } from "redux-persist";
 import thunk from "redux-thunk";
 import storage from "redux-persist/lib/storage";
 
@@ -10,7 +10,7 @@ const reducers = combineReducers({
 
 const persistConfig = {
   key: "root",
-  storage: storage,
+  storage,
 };
 
 const persistorReducer = persistReducer(persistConfig, reducers);
@@ -19,3 +19,5 @@ export const store = configureStore({
   reducer: persistorReducer,
   middleware: [thunk],
 });
+
+export const persistor = persistStore(store);

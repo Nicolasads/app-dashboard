@@ -1,29 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import "./styles.css";
 import Logo from "../../assets/box.png";
 import { api } from "../../services/api";
 import { useDispatch } from "react-redux";
 import { saveToken } from "../../features/slicer/appSlice";
 import { useNavigate } from "react-router-dom";
+import { Field, Form, Formik } from "formik";
+import * as Yup from "yup";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
-  const handleSignIn = async (e) => {
-    e.preventDefault();
+  const signInSchema = Yup.object().shape({
+    email: Yup.string().email("Email Inválido").required("Email obrigatório"),
+    password: Yup.string()
+      .min(3, "Senha no mínimo 3 caracteres")
+      .required("Senha obrigatória"),
+  });
 
-    const data = {
-      email,
-      password,
-    };
-
+  const handleSignIn = async (values) => {
     try {
-      const result = await api.post("login", data);
+      const result = await api.post("login", values);
 
       dispatch(saveToken(result.data));
 
@@ -47,37 +45,54 @@ export default function Login() {
               <h4 className="text-center mt-4">Login</h4>
 
               <div className="mt-5">
-                <form onSubmit={handleSignIn}>
-                  <div className="form-group">
-                    <label htmlFor="exampleInputEmail1" className="mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      className="form-control"
-                      id="exampleInputEmail1"
-                      aria-describedby="emailHelp"
-                      placeholder="Digite seu email"
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  <div className="form-group mt-3">
-                    <label htmlFor="exampleInputPassword1" className="mb-1">
-                      Senha
-                    </label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      id="exampleInputPassword1"
-                      placeholder="Digite sua senha"
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
+                <Formik
+                  initialValues={{ email: "", password: "" }}
+                  onSubmit={(values) => handleSignIn(values)}
+                  validationSchema={signInSchema}
+                >
+                  {({ errors, touched }) => (
+                    <Form>
+                      <div className="form-group">
+                        <label htmlFor="exampleInputEmail1" className="mb-1">
+                          Email
+                        </label>
+                        <Field
+                          type="email"
+                          className="form-control"
+                          id="exampleInputEmail1"
+                          placeholder="Digite seu email"
+                          name="email"
+                        />
+                        {errors.email && touched.email ? (
+                          <p className="text-danger">{errors.email}</p>
+                        ) : null}
+                      </div>
+                      <div className="form-group mt-3">
+                        <label htmlFor="exampleInputPassword1" className="mb-1">
+                          Senha
+                        </label>
+                        <Field
+                          type="password"
+                          className="form-control"
+                          id="exampleInputPassword1"
+                          placeholder="Digite sua senha"
+                          name="password"
+                        />
 
-                  <button type="submit" className="btn btn-primary mt-4 w-100">
-                    Entrar
-                  </button>
-                </form>
+                        {errors.password && touched.password ? (
+                          <p className="text-danger">{errors.password}</p>
+                        ) : null}
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="btn btn-primary mt-4 w-100"
+                      >
+                        Entrar
+                      </button>
+                    </Form>
+                  )}
+                </Formik>
               </div>
             </div>
           </div>

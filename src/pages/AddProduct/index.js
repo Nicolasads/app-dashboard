@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { api } from "../../services/api";
+import CurrencyInput from "../../components/CurrencyInput";
 
 function AddProduct() {
   const navigate = useNavigate();
@@ -29,10 +30,12 @@ function AddProduct() {
       dataFabricacao: values?.dataFabricacao,
       perecivel: values.perecivel,
       dataValidade: values.perecivel === "false" ? "" : values.dataValidade,
-      precoProduto: values.precoProduto,
+      precoProduto: parseFloat(values.precoProduto)
+        .toFixed(2)
+        .replace(",", "."),
     };
 
-    const fetchData = async () => {
+    const postProduct = async () => {
       try {
         await api.post("/products", values);
 
@@ -52,10 +55,10 @@ function AddProduct() {
           "A data de fabricação é maior que a data de validade, verifique e tente novamente."
         );
       } else {
-        fetchData();
+        postProduct();
       }
     } else {
-      fetchData();
+      postProduct();
     }
   };
 
@@ -138,8 +141,7 @@ function AddProduct() {
                     <label htmlFor="preco-produto" className="mb-1">
                       Preço do produto
                     </label>
-                    <input
-                      type="number"
+                    <CurrencyInput
                       className="form-control"
                       id="preco-produto"
                       aria-describedby="preco-produto"
