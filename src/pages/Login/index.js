@@ -7,6 +7,7 @@ import { saveToken } from "../../features/slicer/appSlice";
 import { useNavigate } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -26,8 +27,16 @@ export default function Login() {
       dispatch(saveToken(result.data));
 
       navigate("/dashboard");
-    } catch (error) {
-      console.log("erro", error);
+    } catch (err) {
+      const error = err.response;
+
+      if (error.data === "Cannot find user") {
+        toast.error("Usuário não encontrado.");
+      }
+
+      if (error.data === "Incorrect password") {
+        toast.error("Senha incorreta");
+      }
     }
   };
 
